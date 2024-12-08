@@ -2,8 +2,8 @@
 #include <ncurses.h>
 #include "GameField.h"
 
-GameField::GameField(std::string str) {
-	emptyCell = str;
+GameField::GameField(std::string cellValue) {
+	emptyCell = cellValue;
 	fill(emptyCell);
 }
 

@@ -70,6 +70,9 @@ int main() {
 				case (int)'s':	// Soft Drop
 					tetro[tetrominoCounter].moveXY(&field, 0, -1);
 					break;
+				case (int)' ':	// Hard Drop
+					tetro[tetrominoCounter].hardDrop(&field);
+					break;
 				case (int)'w':	// Rotate Clockwise
 					tetro[tetrominoCounter].update(&field, field.getEmptyCell());
 					tetro[tetrominoCounter].rotate();

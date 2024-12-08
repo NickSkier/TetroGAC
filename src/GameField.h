@@ -18,7 +18,7 @@ private:
 	void print();
 
 public:
-	GameField(std::string str = " .");
+	GameField(std::string cellValue = " .");
 	~GameField();
 
 	void refreshField(size_t timeForUpdate = 0);

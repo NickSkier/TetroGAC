@@ -104,3 +104,10 @@ bool Tetromino::moveXY(GameField* field, int changeX, int changeY) {
 	update(field);
 	return true;
 }
+
+void Tetromino::hardDrop(GameField* field) {
+	bool reachedBottom = true;
+	while (reachedBottom) {
+		reachedBottom = moveXY(field, 0, -1);
+	}
+}

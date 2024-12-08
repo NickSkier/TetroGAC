@@ -7,7 +7,7 @@ Runs in the terminal with a UI in `ncurses`.
 - [x] Gravity
 - [x] Move left and right
 - [x] Soft drop
-- [ ] Hard drop
+- [x] Hard drop
 - [x] Basic rotation
 - [ ] Wall and floor Kicks
 - [x] Full lines deletion
@@ -55,4 +55,7 @@ cd build && ninja
 ## Controls
 - A/D: Move block left/right
 - S: Soft drop
+- Space: Hard drop
+- W: Rotate cloclwise
+- E: Rotate counterclockwise
 - Q: Quit game
