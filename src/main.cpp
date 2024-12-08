@@ -47,7 +47,7 @@ int main() {
     		tickCounter++;
 		    mvprintw(0, 0, "Tetrominoes left: %d", tetrominoCounter);
 			if (tickCounter % 30 == 0) {
-				if (!tetro[tetrominoCounter].moveXY(&field, 0, -1)) {	// Move down and check if a tetromino colided with other blocks
+				if (!tetro[tetrominoCounter].moveXY(&field, 0, -1)) {	// Move down and check if a tetromino collided with other blocks
 					field.clearAndShiftLines();	// Clear full lines
 					--tetrominoCounter;
 				}
@@ -61,30 +61,30 @@ int main() {
 					endwin();
 					std::cout << "\nStopped by user.\n";
 					return 0;
-				case (int)'a':	// Move Left
+				case KEY_LEFT:	// Move Left
 					tetro[tetrominoCounter].moveXY(&field, -1, 0);
 					break;
-				case (int)'d':	// Move Right
+				case KEY_RIGHT:	// Move Right
 					tetro[tetrominoCounter].moveXY(&field, 1, 0);
 					break;
-				case (int)'s':	// Soft Drop
+				case KEY_DOWN:	// Soft Drop
 					tetro[tetrominoCounter].moveXY(&field, 0, -1);
 					break;
 				case (int)' ':	// Hard Drop
 					tetro[tetrominoCounter].hardDrop(&field);
 					break;
-				case (int)'w':	// Rotate Clockwise
-					tetro[tetrominoCounter].update(&field, field.getEmptyCell());
+				case KEY_UP:	// Rotate Clockwise
+					tetro[tetrominoCounter].update(&field, 0);
 					tetro[tetrominoCounter].rotate();
-					if (tetro[tetrominoCounter].colide(&field)) {
+					if (tetro[tetrominoCounter].checkCollisions(&field)) {
 						tetro[tetrominoCounter].rotate(true);
 					}
 					tetro[tetrominoCounter].update(&field);
 					break;
 				case (int)'e':	// Rotate Counterclockwise
-					tetro[tetrominoCounter].update(&field, field.getEmptyCell());
+					tetro[tetrominoCounter].update(&field, 0);
 					tetro[tetrominoCounter].rotate(true);
-					if (tetro[tetrominoCounter].colide(&field)) {
+					if (tetro[tetrominoCounter].checkCollisions(&field)) {
 						tetro[tetrominoCounter].rotate();
 					}
 					tetro[tetrominoCounter].update(&field);

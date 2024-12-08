@@ -7,11 +7,12 @@
 
 Tetromino::Tetromino(std::string str) : tetrominoSymbol(str) {
 	tetrominoX = F_WIDTH / 2 - 1;
-	tetrominoY = F_VISIBLE_HEIGHT + 2;
+	tetrominoY = F_HEIGHT - 4;
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> shape_gen(0, 6);
     shape = shape_gen(gen);
+    cellType = shape + 1;
     rotation = 0;
 }
 
@@ -24,6 +25,14 @@ void Tetromino::setSymbol(std::string str) {
 
 std::string Tetromino::getSymbol() {
 	return tetrominoSymbol;
+}
+
+void Tetromino::setType(int cellValue) {
+	cellType = cellValue;
+}
+
+int Tetromino::getType() {
+	return cellType;
 }
 
 size_t Tetromino::getShape() {
@@ -50,9 +59,9 @@ int Tetromino::getY() const {
 	return tetrominoY;
 }
 
-void Tetromino::update(GameField* field, std::string str) {
-	if (str.empty()) {
-        str = tetrominoSymbol;
+void Tetromino::update(GameField* field, int cellValue) {
+	if (cellValue == -1) {
+        cellValue = cellType;
     }
 	for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {
@@ -61,21 +70,21 @@ void Tetromino::update(GameField* field, std::string str) {
 		    		tetrominoY - j < 0 || tetrominoY - j >= F_HEIGHT)
 		    		{ }
         		else  {
-					field->setCell(tetrominoX + i, tetrominoY - j, str);
+					field->setCell(tetrominoX + i, tetrominoY - j, cellValue);
 				}
 		    }
         }
     }
 }
 
-bool Tetromino::colide(GameField* field) {
+bool Tetromino::checkCollisions(GameField* field) {
 	for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {
         	if (tetrominoes[shape][rotation][j][i]) {
         		if (tetrominoX + i < 0 || tetrominoX + i >= F_WIDTH ||
 		    		tetrominoY - j < 0 || tetrominoY - j >= F_HEIGHT) {
 		    		return true;
-		    	} else if (field->getCell(tetrominoX + i, tetrominoY - j) != field->getEmptyCell()) {
+		    	} else if (field->getCell(tetrominoX + i, tetrominoY - j) != 0) {
 	    			return true;
 	    		}
 		    }
@@ -91,11 +100,11 @@ void Tetromino::rotate(bool reverse) {
 }
 
 bool Tetromino::moveXY(GameField* field, int changeX, int changeY) {
-	update(field, field->getEmptyCell());
+	update(field, 0);
 	tetrominoX += changeX;
 	tetrominoY += changeY;
 
-	if (colide(field)) {
+	if (checkCollisions(field)) {
 		tetrominoX -= changeX;
 		tetrominoY -= changeY;
 		update(field);

@@ -10,6 +10,7 @@ private:
 	int tetrominoY;
 	size_t shape;
 	size_t rotation;
+	int cellType;
 	std::string tetrominoSymbol;
 
 public:
@@ -20,6 +21,8 @@ public:
 
 	void setSymbol(std::string str);
 	std::string getSymbol();
+	void setType(int cellValue);
+	int getType();
 	size_t getShape();
 	size_t getRotation();
 
@@ -27,8 +30,8 @@ public:
 	int getX() const;
 	int getY() const;
 
-	void update(GameField* field, std::string str = "");
-	bool colide(GameField* field);
+	void update(GameField* field, int cellValue = -1);
+	bool checkCollisions(GameField* field);
 
 	void rotate(bool reverse = false);
 	bool moveXY(GameField* field, int changeX = 0, int changeY = 0);

@@ -2,14 +2,14 @@
 #include <ncurses.h>
 #include "GameField.h"
 
-GameField::GameField(std::string cellValue) {
-	emptyCell = cellValue;
-	fill(emptyCell);
+GameField::GameField(std::string cellString, int cellValue) {
+	emptyCell = cellString;
+	fill(cellValue);
 }
 
 GameField::~GameField() { }
 
-void GameField::fill(std::string& cellValue) {
+void GameField::fill(int cellValue) {
 	for (size_t i = 0; i < F_HEIGHT; ++i) {
 		for (size_t j = 0; j < F_WIDTH; ++j) {
 			field[j][i] = cellValue;
@@ -18,9 +18,15 @@ void GameField::fill(std::string& cellValue) {
 }
 
 void GameField::print() {
+std::string cellString = "[]";
 	for (int i = F_VISIBLE_HEIGHT - 1; i >= 0; --i) {
 		for (size_t j = 0; j < F_WIDTH; ++j) {
-			mvprintw(F_VISIBLE_HEIGHT - i, (j * 2)+5, "%s", field[j][i].c_str());
+			if (field[j][i] == 0) {
+				mvprintw(F_VISIBLE_HEIGHT - i, (j * 2)+5, "%s", emptyCell.c_str());
+			}
+			else {
+				mvprintw(F_VISIBLE_HEIGHT - i, (j * 2)+5, "%s", cellString.c_str());
+			}
 		}
 	}
 }
@@ -37,7 +43,7 @@ void GameField::refreshField(size_t timeForUpdate) {
     napms(timeForUpdate);
 }
 
-std::string GameField::getCell(size_t x, size_t y) const {
+int GameField::getCell(size_t x, size_t y) const {
 	if (x < 0 || x >= F_WIDTH || y < 0 || y >= F_HEIGHT) {
 		throw std::out_of_range("Out of range while getting a cell");
 	}
@@ -46,12 +52,12 @@ std::string GameField::getCell(size_t x, size_t y) const {
 	}
 }
 
-void GameField::setCell(size_t x, size_t y, std::string str) {
+void GameField::setCell(size_t x, size_t y, int cellValue) {
 	if (x < 0 || x >= F_WIDTH || y < 0 || y >= F_HEIGHT) {
 		throw std::out_of_range("Out of range while setting a cell");
 	}
 	else {
-		field[x][y] = str;
+		field[x][y] = cellValue;
 	}
 }
 
@@ -66,12 +72,12 @@ void GameField::setEmptyCell(std::string cellString) {
 bool GameField::checkLineState(size_t lineNumber, bool checkForFull) {
 	for (size_t i = 0; i < F_WIDTH; ++i) {
 		if (checkForFull) {
-			if (field[i][lineNumber] == emptyCell) {
+			if (field[i][lineNumber] == 0) {
 				return false;
 			}
 		}
 		else {
-			if (field[i][lineNumber] != emptyCell) {
+			if (field[i][lineNumber] != 0) {
 				return false;
 			}
 		}
@@ -111,8 +117,8 @@ void GameField::clearAndShiftLines() {
 		if (checkLineState(lineNumber, true)) {			 // Find full lines
 			++linesClearedCounter;					 	 // Track the number of cleared lines
 			for (size_t j = 0; j < F_WIDTH; ++j) { 	 	 // Clear each cell in the full line
-				if (field[j][lineNumber] != emptyCell) { // Avoid redundant clearing
-					field[j][lineNumber] = emptyCell; 	 // Mark the cell as empty
+				if (field[j][lineNumber] != 0) { // Avoid redundant clearing
+					field[j][lineNumber] = 0; 	 // Mark the cell as empty
 					refreshField(10);					 // Refresh the field to animate cells clearing (delay: 10 ms)
 				}
 			}

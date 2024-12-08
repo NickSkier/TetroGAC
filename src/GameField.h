@@ -11,20 +11,21 @@ class Tetromino;
 
 class GameField {
 private:
-	std::string field[F_WIDTH][F_HEIGHT];
+	int field[F_WIDTH][F_HEIGHT];
+	int cellType;
 	std::string emptyCell;
 
-	void fill(std::string& cellValue);
+	void fill(int cellValue = 0);
 	void print();
 
 public:
-	GameField(std::string cellValue = " .");
+	GameField(std::string cellString = " .", int cellValue = 0);
 	~GameField();
 
 	void refreshField(size_t timeForUpdate = 0);
 
-	std::string getCell(size_t x, size_t y) const;
-	void setCell(size_t x, size_t y, std::string str);
+	int getCell(size_t x, size_t y) const;
+	void setCell(size_t x, size_t y, int cellValue);
 
 	std::string getEmptyCell() const;
 	void setEmptyCell(std::string cellString);
