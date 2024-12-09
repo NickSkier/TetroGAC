@@ -15,7 +15,7 @@ Runs in the terminal with a UI in `ncurses`.
 - [ ] Piece preview
 - [ ] Score system
 - [ ] Levels
-- [ ] Piece colors
+- [x] Piece colors
 - [ ] Random Generator (7 bag)
 - [ ] Hold
 - [ ] Ghost piece
@@ -53,9 +53,9 @@ cd build && ninja
 6. Exit the game using `q` or `Ctrl-C`.
 
 ## Controls
-- A/D: Move block left/right
-- S: Soft drop
+- KEY_LEFT/KEY_RIGHT: Move block left/right
+- KEY_DOWN: Soft drop
 - Space: Hard drop
-- W: Rotate cloclwise
+- KEY_UP: Rotate cloclwise
 - E: Rotate counterclockwise
 - Q: Quit game

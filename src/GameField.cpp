@@ -21,11 +21,47 @@ void GameField::print() {
 std::string cellString = "[]";
 	for (int i = F_VISIBLE_HEIGHT - 1; i >= 0; --i) {
 		for (size_t j = 0; j < F_WIDTH; ++j) {
-			if (field[j][i] == 0) {
+			switch(field[j][i]) {
+			case 0:
+				attron(A_BOLD);
 				mvprintw(F_VISIBLE_HEIGHT - i, (j * 2)+5, "%s", emptyCell.c_str());
-			}
-			else {
+				attroff(A_BOLD);
+				break;
+			case 1:
+				attron(COLOR_PAIR(1));
 				mvprintw(F_VISIBLE_HEIGHT - i, (j * 2)+5, "%s", cellString.c_str());
+				attroff(COLOR_PAIR(1));
+				break;
+			case 2:
+				attron(COLOR_PAIR(2));
+				mvprintw(F_VISIBLE_HEIGHT - i, (j * 2)+5, "%s", cellString.c_str());
+				attroff(COLOR_PAIR(2));
+				break;
+			case 3:
+				attron(COLOR_PAIR(3));
+				mvprintw(F_VISIBLE_HEIGHT - i, (j * 2)+5, "%s", cellString.c_str());
+				attroff(COLOR_PAIR(3));
+				break;
+			case 4:
+				attron(COLOR_PAIR(4));
+				mvprintw(F_VISIBLE_HEIGHT - i, (j * 2)+5, "%s", cellString.c_str());
+				attroff(COLOR_PAIR(4));
+				break;
+			case 5:
+				attron(COLOR_PAIR(5));
+				mvprintw(F_VISIBLE_HEIGHT - i, (j * 2)+5, "%s", cellString.c_str());
+				attroff(COLOR_PAIR(5));
+				break;
+			case 6:
+				attron(COLOR_PAIR(6));
+				mvprintw(F_VISIBLE_HEIGHT - i, (j * 2)+5, "%s", cellString.c_str());
+				attroff(COLOR_PAIR(6));
+				break;
+			case 7:
+				attron(COLOR_PAIR(7));
+				mvprintw(F_VISIBLE_HEIGHT - i, (j * 2)+5, "%s", cellString.c_str());
+				attroff(COLOR_PAIR(7));
+				break;
 			}
 		}
 	}

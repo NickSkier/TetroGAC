@@ -2,6 +2,8 @@
 
 #include "GameField.h"
 
+#define COLOR_ORANGE 8
+
 class GameField;
 
 class Tetromino {

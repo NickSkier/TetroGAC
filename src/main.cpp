@@ -18,8 +18,20 @@ int main() {
     noecho();
     curs_set(0);
     nodelay(stdscr, TRUE);
+	start_color();
+
+	init_color(COLOR_GREEN, 0, 500, 0);
+	init_color(COLOR_ORANGE, 1000, 300, 0);
+	init_pair(1, COLOR_CYAN, COLOR_CYAN);
+	init_pair(2, COLOR_BLUE, COLOR_BLUE);
+	init_pair(3, COLOR_ORANGE, COLOR_ORANGE);
+	init_pair(4, COLOR_YELLOW, COLOR_YELLOW);
+	init_pair(5, COLOR_GREEN, COLOR_GREEN);
+	init_pair(6, COLOR_RED, COLOR_RED);
+	init_pair(7, COLOR_MAGENTA, COLOR_MAGENTA);
 
 	// Field borders
+	attron(A_BOLD);
     for (size_t i = 0; i < F_WIDTH; ++i) {
 		mvprintw(F_VISIBLE_HEIGHT + 1, F_WIDTH + i + 5, "=");
 		mvprintw(F_VISIBLE_HEIGHT + 1, F_WIDTH - i + 4, "=");
@@ -39,6 +51,7 @@ int main() {
 			//napms(7);
 		}
 	}
+	attroff(A_BOLD);
 
 	// Game loop
 	try {

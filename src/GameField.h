@@ -19,7 +19,7 @@ private:
 	void print();
 
 public:
-	GameField(std::string cellString = " .", int cellValue = 0);
+	GameField(std::string cellString = "  ", int cellValue = 0);
 	~GameField();
 
 	void refreshField(size_t timeForUpdate = 0);
