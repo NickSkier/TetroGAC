@@ -13,7 +13,7 @@ Runs in the terminal with a UI in `ncurses`.
 - [x] Full lines deletion
 - [ ] Game Over
 - [ ] Piece preview
-- [ ] Score system
+- [x] Score system
 - [ ] Levels
 - [x] Piece colors
 - [ ] Random Generator (7 bag)
