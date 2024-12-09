@@ -1,5 +1,6 @@
 #include <iostream>
 #include <random>
+#include <ctime>
 #include <ncurses.h>
 #include "Tetromino.h"
 #include "GameField.h"
@@ -8,15 +9,41 @@
 Tetromino::Tetromino(std::string str) : tetrominoSymbol(str) {
 	tetrominoX = F_WIDTH / 2 - 1;
 	tetrominoY = F_HEIGHT - 4;
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> shape_gen(0, 6);
-    shape = shape_gen(gen);
+    shape = randomBag();
     cellType = shape + 1;
     rotation = 0;
 }
 
 Tetromino::~Tetromino() { }
+
+Tetromino& Tetromino::operator=(const Tetromino & other) {
+	if (this != &other) {
+		tetrominoX = other.tetrominoX;
+		tetrominoY = other.tetrominoY;
+		shape = other.shape;
+		rotation = other.rotation;
+		cellType = other.cellType;
+		tetrominoSymbol = other.tetrominoSymbol;
+	}
+	return *this;
+}
+
+int Tetromino::randomBag() {
+	static int bag[7] = { 0, 1, 2, 3, 4, 5, 6 };
+    static int bagIterator = 7;
+    static std::mt19937 gen(static_cast<unsigned int>(time(nullptr)));
+
+    if (bagIterator == 7) {
+        for (int i = 6; i > 0; --i) {
+            std::uniform_int_distribution<> dist(0, i);
+            int j = dist(gen);
+            std::swap(bag[i], bag[j]);
+        }
+        bagIterator = 0;
+    }
+
+    return bag[bagIterator++];
+}
 
 
 void Tetromino::setSymbol(std::string str) {

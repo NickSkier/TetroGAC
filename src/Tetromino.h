@@ -19,7 +19,9 @@ public:
 	Tetromino(std::string str = "[]");
 	~Tetromino();
 
-	void updateField(GameField* field);
+	Tetromino& operator=(const Tetromino & other);
+
+	int randomBag();
 
 	void setSymbol(std::string str);
 	std::string getSymbol();

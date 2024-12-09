@@ -128,6 +128,7 @@ void GameField::shiftLines(size_t maxPasses, bool checkType) {
  * The maximum value is 4; more passes are unnecessary
  * because of the Tetris logic.
  */
+ 	bool norefresh = false;
 	for (size_t lineNumber = 0; lineNumber < maxPasses; ++lineNumber) {
 		for (size_t lineNumber = 0; lineNumber < F_VISIBLE_HEIGHT; ++lineNumber) { // Traverse visible lines
 			if (checkLineState(lineNumber, checkType)) {
@@ -135,9 +136,14 @@ void GameField::shiftLines(size_t maxPasses, bool checkType) {
 						for (size_t k = 0; k < F_WIDTH; ++k) {			// Traverse cells in the current line
 							if (field[k][j] != field[k][j + 1]) {		// Avoid redundant copying
 								field[k][j] = field[k][j + 1];			// Copy cell data from the line above
-								refreshField(10);						// Refresh the field to animate lines shifting
-						}
+								norefresh = false;
+							}
+							else {
+								norefresh = true;
+							}
+
 					}
+					if (!norefresh) refreshField(30);						// Refresh the field to animate lines shifting
 				}
 			}
 		}
@@ -150,13 +156,16 @@ int GameField::clearAndShiftLines() {
 
 	// Clear full lines
 	for (size_t lineNumber = 0; lineNumber < F_VISIBLE_HEIGHT; ++lineNumber) {	// Traverse visible lines
-		if (checkLineState(lineNumber, true)) {			 // Find full lines
-			++linesClearedCounter;					 	 // Track the number of cleared lines
-			for (size_t j = 0; j < F_WIDTH; ++j) { 	 	 // Clear each cell in the full line
-				if (field[j][lineNumber] != 0) { // Avoid redundant clearing
-					field[j][lineNumber] = 0; 	 // Mark the cell as empty
-					refreshField(10);					 // Refresh the field to animate cells clearing (delay: 10 ms)
+		if (checkLineState(lineNumber, true)) {			 	// Find full lines
+			++linesClearedCounter;					 	 	// Track the number of cleared lines
+			for (size_t j = 0; j < F_WIDTH/2; ++j) { 	 	// Clear each cell in the full line
+				if (field[j][lineNumber] != 0) { 		 	// Avoid redundant clearing
+					field[j][lineNumber] = 0; 	 		 	// Mark the cell as empty from left part of the line
 				}
+				if (field[F_WIDTH-1-j][lineNumber] != 0) { 	// Avoid redundant clearing
+					field[F_WIDTH-1-j][lineNumber] = 0; 	// Mark the cell as empty from right part of the line
+				}
+			refreshField(20);					 		 	// Refresh the field to animate cells clearing (delay: 30 ms)
 			}
 		}
 	}

@@ -14,7 +14,8 @@ int main() {
 
 	Game game;
 	GameField field;
-	Tetromino tetro[numberOfTetrominos];
+	Tetromino tetromino;
+	Tetromino nextTetromino;
 
     // Initialize ncurses
     initscr();
@@ -65,7 +66,7 @@ int main() {
 		    mvprintw(0, 0, "Tetrominoes left: %d", tetrominoCounter);
 		    mvprintw(0, 25, "Score: %d", score);
 			if (tickCounter % 30 == 0) {
-				if (!tetro[tetrominoCounter].moveXY(&field, 0, -1)) {	// Move down and check if a tetromino collided with other blocks
+				if (!tetromino.moveXY(&field, 0, -1)) {	// Move down and check if a tetromino collided with other blocks
 
 					scoreLinesCounter = field.clearAndShiftLines();	// Clear full lines
 
@@ -78,10 +79,12 @@ int main() {
 						}
 					}
 
-					if (game.GameOver(&field, &tetro[tetrominoCounter])) {
+					if (game.GameOver(&field, &tetromino)) {
 						break;
 					}
 
+					tetromino = nextTetromino;
+					nextTetromino = Tetromino();
 					--tetrominoCounter;
 				}
 				field.refreshField();
@@ -95,33 +98,33 @@ int main() {
 					std::cout << "\nStopped by user.\n";
 					return 0;
 				case KEY_LEFT:	// Move Left
-					tetro[tetrominoCounter].moveXY(&field, -1, 0);
+					tetromino.moveXY(&field, -1, 0);
 					break;
 				case KEY_RIGHT:	// Move Right
-					tetro[tetrominoCounter].moveXY(&field, 1, 0);
+					tetromino.moveXY(&field, 1, 0);
 					break;
 				case KEY_DOWN:	// Soft Drop
-					tetro[tetrominoCounter].moveXY(&field, 0, -1);
+					tetromino.moveXY(&field, 0, -1);
 					score += 1;	// 1 point for each cell of a soft drop
 					break;
 				case (int)' ':	// Hard Drop
-					score += tetro[tetrominoCounter].hardDrop(&field); // 2 points for each cell of a hard drop
+					score += tetromino.hardDrop(&field); // 2 points for each cell of a hard drop
 					break;
 				case KEY_UP:	// Rotate Clockwise
-					tetro[tetrominoCounter].update(&field, 0);
-					tetro[tetrominoCounter].rotate();
-					if (tetro[tetrominoCounter].checkCollisions(&field)) {
-						tetro[tetrominoCounter].rotate(true);
+					tetromino.update(&field, 0);
+					tetromino.rotate();
+					if (tetromino.checkCollisions(&field)) {
+						tetromino.rotate(true);
 					}
-					tetro[tetrominoCounter].update(&field);
+					tetromino.update(&field);
 					break;
 				case (int)'e':	// Rotate Counterclockwise
-					tetro[tetrominoCounter].update(&field, 0);
-					tetro[tetrominoCounter].rotate(true);
-					if (tetro[tetrominoCounter].checkCollisions(&field)) {
-						tetro[tetrominoCounter].rotate();
+					tetromino.update(&field, 0);
+					tetromino.rotate(true);
+					if (tetromino.checkCollisions(&field)) {
+						tetromino.rotate();
 					}
-					tetro[tetrominoCounter].update(&field);
+					tetromino.update(&field);
 					break;
 				}
 				field.refreshField();
@@ -142,3 +145,4 @@ int main() {
 
 	return 0;
 }
+
