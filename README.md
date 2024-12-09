@@ -11,7 +11,7 @@ Runs in the terminal with a UI in `ncurses`.
 - [x] Basic rotation
 - [ ] Wall and floor Kicks
 - [x] Full lines deletion
-- [ ] Game Over
+- [x] Game Over
 - [ ] Piece preview
 - [x] Score system
 - [ ] Levels

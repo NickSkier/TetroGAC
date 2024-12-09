@@ -1,5 +1,6 @@
 #include <iostream>
 #include <ncurses.h>
+#include "Game.h"
 #include "GameField.h"
 #include "Tetromino.h"
 
@@ -7,10 +8,11 @@ int main() {
 	const int numberOfTetrominos = F_WIDTH * F_HEIGHT;
 	int tetrominoCounter = numberOfTetrominos - 1;
 	int score = 0;
-	int scoreTemp;
+	int scoreLinesCounter;
 	int userInput;
 	int tickCounter = 0;
 
+	Game game;
 	GameField field;
 	Tetromino tetro[numberOfTetrominos];
 
@@ -65,15 +67,19 @@ int main() {
 			if (tickCounter % 30 == 0) {
 				if (!tetro[tetrominoCounter].moveXY(&field, 0, -1)) {	// Move down and check if a tetromino collided with other blocks
 
-					scoreTemp = field.clearAndShiftLines();	// Clear full lines
+					scoreLinesCounter = field.clearAndShiftLines();	// Clear full lines
 
-					if (scoreTemp) {
-						switch (scoreTemp) {
-						case 1: score += 100; break;
-						case 2: score += 300; break;
-						case 3: score += 500; break;
-						case 4: score += 800; break;
+					if (scoreLinesCounter) {
+						switch (scoreLinesCounter) {
+						case 1: score += 100; break;	// 100 points for 1 full line
+						case 2: score += 300; break;	// 300 points for 2 full lines
+						case 3: score += 500; break;	// 500 points for 3 full lines
+						case 4: score += 800; break;	// 800 points for 4 full lines
 						}
+					}
+
+					if (game.GameOver(&field, &tetro[tetrominoCounter])) {
+						break;
 					}
 
 					--tetrominoCounter;
@@ -96,10 +102,10 @@ int main() {
 					break;
 				case KEY_DOWN:	// Soft Drop
 					tetro[tetrominoCounter].moveXY(&field, 0, -1);
-					score += 1;
+					score += 1;	// 1 point for each cell of a soft drop
 					break;
 				case (int)' ':	// Hard Drop
-					score += tetro[tetrominoCounter].hardDrop(&field);
+					score += tetro[tetrominoCounter].hardDrop(&field); // 2 points for each cell of a hard drop
 					break;
 				case KEY_UP:	// Rotate Clockwise
 					tetro[tetrominoCounter].update(&field, 0);

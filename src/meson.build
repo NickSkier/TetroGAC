@@ -1,5 +1,6 @@
 tetrogac_sources = [
   'main.cpp',
+  'Game.cpp',
   'GameField.cpp',
   'Tetromino.cpp',
 ]
