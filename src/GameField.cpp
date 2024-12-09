@@ -145,7 +145,7 @@ void GameField::shiftLines(size_t maxPasses, bool checkType) {
 }
 
 // Check for full lines, if any clear them and shift remaining lines down
-void GameField::clearAndShiftLines() {
+int GameField::clearAndShiftLines() {
 	size_t linesClearedCounter = 0;
 
 	// Clear full lines
@@ -165,4 +165,5 @@ void GameField::clearAndShiftLines() {
 	if (linesClearedCounter != 0) {
 		shiftLines(linesClearedCounter, false);	// Shift empty lines
 	}
+	return linesClearedCounter;
 }

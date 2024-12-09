@@ -32,6 +32,6 @@ public:
 
 	bool checkLineState(size_t lineNumber, bool checkForFull = true);
 	void shiftLines(size_t maxPasses = 4, bool checkType = true);
-	void clearAndShiftLines();
+	int clearAndShiftLines();
 };
 

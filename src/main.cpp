@@ -6,6 +6,8 @@
 int main() {
 	const int numberOfTetrominos = F_WIDTH * F_HEIGHT;
 	int tetrominoCounter = numberOfTetrominos - 1;
+	int score = 0;
+	int scoreTemp;
 	int userInput;
 	int tickCounter = 0;
 
@@ -59,9 +61,21 @@ int main() {
 			napms(16);
     		tickCounter++;
 		    mvprintw(0, 0, "Tetrominoes left: %d", tetrominoCounter);
+		    mvprintw(0, 25, "Score: %d", score);
 			if (tickCounter % 30 == 0) {
 				if (!tetro[tetrominoCounter].moveXY(&field, 0, -1)) {	// Move down and check if a tetromino collided with other blocks
-					field.clearAndShiftLines();	// Clear full lines
+
+					scoreTemp = field.clearAndShiftLines();	// Clear full lines
+
+					if (scoreTemp) {
+						switch (scoreTemp) {
+						case 1: score += 100; break;
+						case 2: score += 300; break;
+						case 3: score += 500; break;
+						case 4: score += 800; break;
+						}
+					}
+
 					--tetrominoCounter;
 				}
 				field.refreshField();
@@ -82,9 +96,10 @@ int main() {
 					break;
 				case KEY_DOWN:	// Soft Drop
 					tetro[tetrominoCounter].moveXY(&field, 0, -1);
+					score += 1;
 					break;
 				case (int)' ':	// Hard Drop
-					tetro[tetrominoCounter].hardDrop(&field);
+					score += tetro[tetrominoCounter].hardDrop(&field);
 					break;
 				case KEY_UP:	// Rotate Clockwise
 					tetro[tetrominoCounter].update(&field, 0);

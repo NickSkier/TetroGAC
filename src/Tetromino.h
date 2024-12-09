@@ -37,5 +37,5 @@ public:
 
 	void rotate(bool reverse = false);
 	bool moveXY(GameField* field, int changeX = 0, int changeY = 0);
-	void hardDrop(GameField* field);
+	int hardDrop(GameField* field);
 };

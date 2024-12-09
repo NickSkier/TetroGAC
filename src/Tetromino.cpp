@@ -114,9 +114,12 @@ bool Tetromino::moveXY(GameField* field, int changeX, int changeY) {
 	return true;
 }
 
-void Tetromino::hardDrop(GameField* field) {
+int Tetromino::hardDrop(GameField* field) {
+	int score = 0;
 	bool reachedBottom = true;
 	while (reachedBottom) {
 		reachedBottom = moveXY(field, 0, -1);
+		score += 2;
 	}
+	return score;
 }
