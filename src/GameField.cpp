@@ -2,177 +2,92 @@
 #include <ncurses.h>
 #include "GameField.h"
 
-GameField::GameField(std::string cellString, int cellValue) {
-	emptyCell = cellString;
-	fill(cellValue);
+GameField::GameField(size_t width, size_t height, int visWidth, int visHeight, std::string cellString, int cellValue)
+    : width(width), height(height), emptyCell(cellString) {
+    if (visWidth == -1) {
+    	visibleWidth = width;
+    }
+    else {
+    	visibleWidth = visWidth;
+    }
+    if (visHeight == -1) {
+    	visibleHeight = height;
+    }
+    else {
+    	visibleHeight = visHeight;
+    }
+    field = new int*[width];
+    for (size_t i = 0; i < width; ++i) {
+        field[i] = new int[height];
+    }
+    fill(cellValue);
 }
 
-GameField::~GameField() { }
+GameField::~GameField() {
+    for (size_t i = 0; i < width; ++i) {
+        delete[] field[i];
+    }
+    delete[] field;
+}
 
 void GameField::fill(int cellValue) {
-	for (size_t i = 0; i < F_HEIGHT; ++i) {
-		for (size_t j = 0; j < F_WIDTH; ++j) {
-			field[j][i] = cellValue;
-		}
-	}
-}
-
-void GameField::print() {
-std::string cellString = "[]";
-	for (int i = F_VISIBLE_HEIGHT - 1; i >= 0; --i) {
-		for (size_t j = 0; j < F_WIDTH; ++j) {
-			switch(field[j][i]) {
-			case 0:
-				attron(A_BOLD);
-				mvprintw(F_VISIBLE_HEIGHT - i, (j * 2)+5, "%s", emptyCell.c_str());
-				attroff(A_BOLD);
-				break;
-			case 1:
-				attron(COLOR_PAIR(1));
-				mvprintw(F_VISIBLE_HEIGHT - i, (j * 2)+5, "%s", cellString.c_str());
-				attroff(COLOR_PAIR(1));
-				break;
-			case 2:
-				attron(COLOR_PAIR(2));
-				mvprintw(F_VISIBLE_HEIGHT - i, (j * 2)+5, "%s", cellString.c_str());
-				attroff(COLOR_PAIR(2));
-				break;
-			case 3:
-				attron(COLOR_PAIR(3));
-				mvprintw(F_VISIBLE_HEIGHT - i, (j * 2)+5, "%s", cellString.c_str());
-				attroff(COLOR_PAIR(3));
-				break;
-			case 4:
-				attron(COLOR_PAIR(4));
-				mvprintw(F_VISIBLE_HEIGHT - i, (j * 2)+5, "%s", cellString.c_str());
-				attroff(COLOR_PAIR(4));
-				break;
-			case 5:
-				attron(COLOR_PAIR(5));
-				mvprintw(F_VISIBLE_HEIGHT - i, (j * 2)+5, "%s", cellString.c_str());
-				attroff(COLOR_PAIR(5));
-				break;
-			case 6:
-				attron(COLOR_PAIR(6));
-				mvprintw(F_VISIBLE_HEIGHT - i, (j * 2)+5, "%s", cellString.c_str());
-				attroff(COLOR_PAIR(6));
-				break;
-			case 7:
-				attron(COLOR_PAIR(7));
-				mvprintw(F_VISIBLE_HEIGHT - i, (j * 2)+5, "%s", cellString.c_str());
-				attroff(COLOR_PAIR(7));
-				break;
-			}
-		}
-	}
-}
-
-void GameField::refreshField(size_t timeForUpdate) {
-    static int frameCounter = 0;
-
-    print();
-    refresh();
-
-    ++frameCounter;
-    mvprintw(F_VISIBLE_HEIGHT + 2, 0, "Frame: %d", frameCounter);
-
-    napms(timeForUpdate);
+    for (size_t i = 0; i < height; ++i) {
+        for (size_t j = 0; j < width; ++j) {
+            field[j][i] = cellValue;
+        }
+    }
 }
 
 int GameField::getCell(size_t x, size_t y) const {
-	if (x < 0 || x >= F_WIDTH || y < 0 || y >= F_HEIGHT) {
-		throw std::out_of_range("Out of range while getting a cell");
-	}
-	else {
-		return field[x][y];
-	}
+    if (x >= width || y >= height) {
+        throw std::out_of_range("Out of range while getting a cell");
+    }
+    return field[x][y];
 }
 
 void GameField::setCell(size_t x, size_t y, int cellValue) {
-	if (x < 0 || x >= F_WIDTH || y < 0 || y >= F_HEIGHT) {
-		throw std::out_of_range("Out of range while setting a cell");
-	}
-	else {
-		field[x][y] = cellValue;
-	}
+    if (x >= width || y >= height) {
+        throw std::out_of_range("Out of range while setting a cell");
+    }
+    field[x][y] = cellValue;
+}
+
+size_t GameField::getWidth() const {
+	return width;
+}
+
+size_t GameField::getHeight() const {
+	return height;
+}
+
+size_t GameField::getVisibleWidth() const {
+	return visibleWidth;
+}
+
+size_t GameField::getVisibleHeight() const {
+	return visibleHeight;
 }
 
 std::string GameField::getEmptyCell() const {
-	return emptyCell;
+    return emptyCell;
 }
 
 void GameField::setEmptyCell(std::string cellString) {
-	emptyCell = cellString;
+    emptyCell = cellString;
 }
 
-bool GameField::checkLineState(size_t lineNumber, bool checkForFull) {
-	for (size_t i = 0; i < F_WIDTH; ++i) {
-		if (checkForFull) {
-			if (field[i][lineNumber] == 0) {
-				return false;
-			}
-		}
-		else {
-			if (field[i][lineNumber] != 0) {
-				return false;
-			}
-		}
-	}
-
-	return true;
+int& GameField::operator()(size_t x, size_t y) {
+    if (x >= width || y >= height) {
+    std::cerr << x << " " << y;
+        throw std::out_of_range("Out of range while accessing a cell");
+    }
+    return field[x][y];
 }
 
-void GameField::shiftLines(size_t maxPasses, bool checkType) {
-/*
- * maxPasses - The number of iterations over the array.
- * The maximum value is 4; more passes are unnecessary
- * because of the Tetris logic.
- */
- 	bool norefresh = false;
-	for (size_t lineNumber = 0; lineNumber < maxPasses; ++lineNumber) {
-		for (size_t lineNumber = 0; lineNumber < F_VISIBLE_HEIGHT; ++lineNumber) { // Traverse visible lines
-			if (checkLineState(lineNumber, checkType)) {
-				for (size_t j = lineNumber; j < F_VISIBLE_HEIGHT; ++j) {// Shift lines down from this point
-						for (size_t k = 0; k < F_WIDTH; ++k) {			// Traverse cells in the current line
-							if (field[k][j] != field[k][j + 1]) {		// Avoid redundant copying
-								field[k][j] = field[k][j + 1];			// Copy cell data from the line above
-								norefresh = false;
-							}
-							else {
-								norefresh = true;
-							}
-
-					}
-					if (!norefresh) refreshField(30);						// Refresh the field to animate lines shifting
-				}
-			}
-		}
-	}
+const int& GameField::operator()(size_t x, size_t y) const {
+    if (x >= width || y >= height) {
+        throw std::out_of_range("Out of range while accessing a cell");
+    }
+    return field[x][y];
 }
 
-// Check for full lines, if any clear them and shift remaining lines down
-int GameField::clearAndShiftLines() {
-	size_t linesClearedCounter = 0;
-
-	// Clear full lines
-	for (size_t lineNumber = 0; lineNumber < F_VISIBLE_HEIGHT; ++lineNumber) {	// Traverse visible lines
-		if (checkLineState(lineNumber, true)) {			 	// Find full lines
-			++linesClearedCounter;					 	 	// Track the number of cleared lines
-			for (size_t j = 0; j < F_WIDTH/2; ++j) { 	 	// Clear each cell in the full line
-				if (field[j][lineNumber] != 0) { 		 	// Avoid redundant clearing
-					field[j][lineNumber] = 0; 	 		 	// Mark the cell as empty from left part of the line
-				}
-				if (field[F_WIDTH-1-j][lineNumber] != 0) { 	// Avoid redundant clearing
-					field[F_WIDTH-1-j][lineNumber] = 0; 	// Mark the cell as empty from right part of the line
-				}
-			refreshField(20);					 		 	// Refresh the field to animate cells clearing (delay: 30 ms)
-			}
-		}
-	}
-
-	// Shift lines down if any were cleared
-	if (linesClearedCounter != 0) {
-		shiftLines(linesClearedCounter, false);	// Shift empty lines
-	}
-	return linesClearedCounter;
-}

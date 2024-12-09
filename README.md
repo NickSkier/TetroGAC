@@ -16,7 +16,7 @@ Runs in the terminal with a UI in `ncurses`.
 - [x] Score system
 - [ ] Levels
 - [x] Piece colors
-- [ ] Random Generator (7 bag)
+- [x] Random Generator (7 bag)
 - [ ] Hold
 - [ ] Ghost piece
 

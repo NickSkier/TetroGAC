@@ -3,6 +3,7 @@
 #include <ctime>
 #include <ncurses.h>
 #include "Tetromino.h"
+#include "Game.h"
 #include "GameField.h"
 #include "Tetrominoes.h"
 
@@ -93,8 +94,8 @@ void Tetromino::update(GameField* field, int cellValue) {
 	for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {
         	if (tetrominoes[shape][rotation][j][i]) {
-        		if (tetrominoX + i < 0 || tetrominoX + i >= F_WIDTH ||
-		    		tetrominoY - j < 0 || tetrominoY - j >= F_HEIGHT)
+        		if (tetrominoX + i < 0 || tetrominoX + i >= field->getWidth() ||
+		    		tetrominoY - j < 0 || tetrominoY - j >= field->getHeight())
 		    		{ }
         		else  {
 					field->setCell(tetrominoX + i, tetrominoY - j, cellValue);
@@ -108,8 +109,8 @@ bool Tetromino::checkCollisions(GameField* field) {
 	for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {
         	if (tetrominoes[shape][rotation][j][i]) {
-        		if (tetrominoX + i < 0 || tetrominoX + i >= F_WIDTH ||
-		    		tetrominoY - j < 0 || tetrominoY - j >= F_HEIGHT) {
+        		if (tetrominoX + i < 0 || tetrominoX + i >= field->getWidth() ||
+		    		tetrominoY - j < 0 || tetrominoY - j >= field->getHeight()) {
 		    		return true;
 		    	} else if (field->getCell(tetrominoX + i, tetrominoY - j) != 0) {
 	    			return true;

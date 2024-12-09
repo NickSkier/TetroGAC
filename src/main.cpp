@@ -5,15 +5,14 @@
 #include "Tetromino.h"
 
 int main() {
-	const int numberOfTetrominos = F_WIDTH * F_HEIGHT;
-	int tetrominoCounter = numberOfTetrominos - 1;
 	int score = 0;
-	int scoreLinesCounter;
+	int linesCounter;
+	int linesToClear = 26;
 	int userInput;
 	int tickCounter = 0;
 
 	Game game;
-	GameField field;
+	GameField field(F_WIDTH, F_HEIGHT, F_WIDTH , F_VISIBLE_HEIGHT);
 	Tetromino tetromino;
 	Tetromino nextTetromino;
 
@@ -41,37 +40,31 @@ int main() {
 		mvprintw(F_VISIBLE_HEIGHT + 1, F_WIDTH + i + 5, "=");
 		mvprintw(F_VISIBLE_HEIGHT + 1, F_WIDTH - i + 4, "=");
 		refresh();
-		//napms(20);
+		napms(20);
 	}
     for (int i = F_VISIBLE_HEIGHT+1; i > 0 ; --i) {
         mvprintw(i, 3, "<!");
         mvprintw(i, F_WIDTH * 2 + 5, "!>");
 		refresh();
-		//napms(20);
-	}
-	for (int i = F_VISIBLE_HEIGHT; i > 0; --i) {
-		for (size_t j = 0; j < F_WIDTH; ++j) {
-			mvprintw(i, (j * 2)+5, "%s", field.getEmptyCell().c_str());
-			refresh();
-			//napms(7);
-		}
+		napms(20);
 	}
 	attroff(A_BOLD);
 
 	// Game loop
 	try {
-		while (tetrominoCounter >= 0) {
+		while (linesToClear > 0) {
 			napms(16);
     		tickCounter++;
-		    mvprintw(0, 0, "Tetrominoes left: %d", tetrominoCounter);
-		    mvprintw(0, 25, "Score: %d", score);
+		    mvprintw(0, 0, "Lines left: %d", linesToClear);
+		    mvprintw(0, 20, "Score: %d", score);
+
 			if (tickCounter % 30 == 0) {
 				if (!tetromino.moveXY(&field, 0, -1)) {	// Move down and check if a tetromino collided with other blocks
 
-					scoreLinesCounter = field.clearAndShiftLines();	// Clear full lines
+					linesCounter = game.clearAndShiftLines(&field);	// Clear full lines
 
-					if (scoreLinesCounter) {
-						switch (scoreLinesCounter) {
+					if (linesCounter) {
+						switch (linesCounter) {
 						case 1: score += 100; break;	// 100 points for 1 full line
 						case 2: score += 300; break;	// 300 points for 2 full lines
 						case 3: score += 500; break;	// 500 points for 3 full lines
@@ -79,15 +72,16 @@ int main() {
 						}
 					}
 
+					linesToClear -= linesCounter;
+
 					if (game.GameOver(&field, &tetromino)) {
 						break;
 					}
 
 					tetromino = nextTetromino;
 					nextTetromino = Tetromino();
-					--tetrominoCounter;
 				}
-				field.refreshField();
+				game.refreshField(&field);
 			}
 		    userInput = getch();
 			if (userInput != ERR) {	// Check if a key has been pressed
@@ -127,7 +121,7 @@ int main() {
 					tetromino.update(&field);
 					break;
 				}
-				field.refreshField();
+				game.refreshField(&field);
 			}
 		}
 	}
@@ -139,8 +133,9 @@ int main() {
 
     endwin();
 
-    if (tetrominoCounter == 0) {
-        std::cout << "\nThere are no more tetrominoes.\n\n";
+    if (linesToClear <= 0) {
+        std::cout << std::endl << "You clear all lines!" << std::endl;
+        std::cout << "Your score: " << score << std::endl << std::endl;
     }
 
 	return 0;
