@@ -34,4 +34,3 @@ public:
 	void shiftLines(size_t maxPasses = 4, bool checkType = true);
 	int clearAndShiftLines();
 };
-
