@@ -133,6 +133,9 @@ int main() {
 					}
 					tetromino.update(&field);
 					break;
+				case (int)'l':	// Increase linesToClear
+					++linesToClear;
+					break;
 				}
 				game.refreshField(&field);
 			}
