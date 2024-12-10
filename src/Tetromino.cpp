@@ -7,9 +7,9 @@
 #include "GameField.h"
 #include "Tetrominoes.h"
 
-Tetromino::Tetromino(std::string str) : tetrominoSymbol(str) {
-	tetrominoX = F_WIDTH / 2 - 1;
-	tetrominoY = F_HEIGHT - 4;
+Tetromino::Tetromino(int x, int y, std::string str) : tetrominoSymbol(str) {
+	tetrominoX = x;
+	tetrominoY = y;
     shape = randomBag();
     cellType = shape + 1;
     rotation = 0;
@@ -71,7 +71,7 @@ size_t Tetromino::getRotation() {
 	return rotation;
 }
 
-void Tetromino::setXY(int& x, int& y) {
+void Tetromino::setXY(int x, int y) {
 	if (x < 0 || x >= F_WIDTH || y < 0 || y >= F_HEIGHT) {
 		throw std::out_of_range("Out of range while setting a tetromino's XY coordinates");
 	}

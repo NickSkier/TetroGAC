@@ -5,32 +5,32 @@
 #include "Tetromino.h"
 
 
-void Game::refreshField(GameField* field, size_t timeForUpdate) {
-    static int frameCounter = 0;
+void Game::refreshField(GameField* field, size_t timeForUpdate, int offsetX, int offsetY, bool borders) {
+    //static int frameCounter = 0;
 
-    print(field);
-    printBorders(field);
+    print(field, offsetX, offsetY);
+    if (borders) printBorders(field, offsetX, offsetY);
     refresh();
 
-    ++frameCounter;
-    mvprintw(field->getVisibleHeight() + 2, 0, "Frame: %d", frameCounter);
+    //++frameCounter;
+    //mvprintw(field->getVisibleHeight() + 2, 0, "Frame: %d", frameCounter);
 
     napms(timeForUpdate);
 }
 
-void Game::print(GameField* field) const {
+void Game::print(GameField* field, int offsetX, int offsetY) const {
 std::string blockString = "[]";
 	for (int i = field->getVisibleHeight() - 1; i >= 0; --i) {
 		for (int j = 0; j < field->getWidth(); ++j) {
 			switch((*field)(j, i)) {
 			case 0:
 				attron(A_BOLD);
-				mvprintw(field->getVisibleHeight() - i, (j * 2)+5, "%s", field->getEmptyCell().c_str());
+				mvprintw(field->getVisibleHeight() - i + offsetY, (j * 2)+5 + offsetX, "%s", field->getEmptyCell().c_str());
 				attroff(A_BOLD);
 				break;
 			default:
 				attron(COLOR_PAIR((*field)(j, i)));
-				mvprintw(field->getVisibleHeight() - i, (j * 2)+5, "%s", blockString.c_str());
+				mvprintw(field->getVisibleHeight() - i + offsetY, (j * 2)+5 + offsetX, "%s", blockString.c_str());
 				attroff(COLOR_PAIR((*field)(j, i)));
 				break;
 			}
@@ -38,16 +38,16 @@ std::string blockString = "[]";
 	}
 }
 
-void Game::printBorders(GameField* field) const {
+void Game::printBorders(GameField* field, int offsetX, int offsetY) const {
 	attron(A_BOLD);
     for (size_t i = 0; i < field->getWidth(); ++i) {
-		mvprintw(field->getVisibleHeight() + 1, field->getWidth() + i + 5, "=");
-		mvprintw(field->getVisibleHeight() + 1, field->getWidth() - i + 4, "=");
+		mvprintw(field->getVisibleHeight() + 1 + offsetY, field->getWidth() + i + 5 + offsetX, "=");
+		mvprintw(field->getVisibleHeight() + 1 + offsetY, field->getWidth() - i + 4 + offsetX, "=");
 		refresh();
 	}
     for (int i = field->getVisibleHeight()+1; i > 0 ; --i) {
         mvprintw(i, 3, "<!");
-        mvprintw(i, field->getWidth() * 2 + 5, "!>");
+        mvprintw(i, field->getWidth() * 2 + 5 + offsetX, "!>");
 		refresh();
 	}
 	attroff(A_BOLD);
@@ -137,7 +137,7 @@ bool Game::GameOver(GameField* field, Tetromino* tetro) {
 		attroff(A_BOLD);
 		getchar();
 		for (size_t i = 0; i < field->getHeight() + 5; ++i) {
-			for (size_t j = 0; j < field->getWidth() * 2 + 15; ++j) {
+			for (size_t j = 0; j < field->getWidth() * 2 + 20; ++j) {
 				userInterrupt = getch();
 				if (userInterrupt != ERR) {
 					shouldBrake = true;

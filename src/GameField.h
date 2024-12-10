@@ -15,11 +15,11 @@ private:
 	int cellType;
 	std::string emptyCell;
 
-	void fill(int cellValue = 0);
-
 public:
 	GameField(size_t width, size_t height, int visWidth = -1, int visHeight = -1, std::string cellString = "  ", int cellValue = 0);
     ~GameField();
+
+	void fill(int cellValue = 0);
 
     void refreshField(size_t timeForUpdate);
 

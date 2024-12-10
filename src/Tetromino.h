@@ -3,6 +3,9 @@
 #include "GameField.h"
 
 #define COLOR_ORANGE 8
+#define F_WIDTH 10
+#define F_HEIGHT 26
+#define F_VISIBLE_HEIGHT 20
 
 class GameField;
 
@@ -16,7 +19,7 @@ private:
 	std::string tetrominoSymbol;
 
 public:
-	Tetromino(std::string str = "[]");
+	Tetromino(int x = F_WIDTH / 2 - 1, int y = F_HEIGHT - 4, std::string str = "[]");
 	~Tetromino();
 
 	Tetromino& operator=(const Tetromino & other);
@@ -30,7 +33,7 @@ public:
 	size_t getShape();
 	size_t getRotation();
 
-	void setXY(int& x, int& y);
+	void setXY(int x, int y);
 	int getX() const;
 	int getY() const;
 

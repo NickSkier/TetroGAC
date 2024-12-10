@@ -13,8 +13,10 @@ int main() {
 
 	Game game;
 	GameField field(F_WIDTH, F_HEIGHT, F_WIDTH , F_VISIBLE_HEIGHT);
+	GameField preview(6, 6, -1, -1);
 	Tetromino tetromino;
 	Tetromino nextTetromino;
+	Tetromino nextTetrominoPreview;
 
     // Initialize ncurses
     initscr();
@@ -34,7 +36,7 @@ int main() {
 	init_pair(6, COLOR_RED, COLOR_RED);
 	init_pair(7, COLOR_MAGENTA, COLOR_MAGENTA);
 
-	// Field borders
+	// Field borders initialization animation
 	attron(A_BOLD);
     for (size_t i = 0; i < F_WIDTH; ++i) {
 		mvprintw(F_VISIBLE_HEIGHT + 1, F_WIDTH + i + 5, "=");
@@ -50,12 +52,17 @@ int main() {
 	}
 	attroff(A_BOLD);
 
+	nextTetrominoPreview = nextTetromino;
+	nextTetrominoPreview.setXY( 1, 3);
+	nextTetrominoPreview.update(&preview);
+	game.refreshField(&preview, 0, 25, 0, false);
+
 	// Game loop
 	try {
 		while (linesToClear > 0) {
 			napms(16);
     		tickCounter++;
-		    mvprintw(0, 0, "Lines left: %d", linesToClear);
+		    mvprintw(0, 0, "Lines left: %*d", 2, linesToClear);
 		    mvprintw(0, 20, "Score: %d", score);
 
 			if (tickCounter % 30 == 0) {
@@ -80,6 +87,12 @@ int main() {
 
 					tetromino = nextTetromino;
 					nextTetromino = Tetromino();
+
+					preview.fill();
+					nextTetrominoPreview = nextTetromino;
+					nextTetrominoPreview.setXY( 1, 3);
+					nextTetrominoPreview.update(&preview);
+					game.refreshField(&preview, 0, 25, 0, false);
 				}
 				game.refreshField(&field);
 			}

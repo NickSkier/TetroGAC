@@ -9,9 +9,9 @@
 
 class Game {
 public:
-	void refreshField(GameField* field, size_t timeForUpdate = 0);
-	void print(GameField* field) const;
-	void printBorders(GameField* field) const;
+	void refreshField(GameField* field, size_t timeForUpdate = 0, int offsetX = 0, int offsetY = 0, bool borders = true);
+	void print(GameField* field, int offsetX = 0, int offsetY = 0) const;
+	void printBorders(GameField* field, int offsetX = 0, int offsetY = 0) const;
 
 	bool checkLineState(GameField* field, size_t lineNumber, bool checkForFull = true);
 	void shiftLines(GameField* field, size_t maxPasses = 4, bool checkType = true);

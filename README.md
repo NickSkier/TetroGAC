@@ -12,7 +12,7 @@ Runs in the terminal with a UI in `ncurses`.
 - [ ] Wall and floor Kicks
 - [x] Full lines deletion
 - [x] Game Over
-- [ ] Piece preview
+- [x] Piece preview
 - [x] Score system
 - [ ] Levels
 - [x] Piece colors
