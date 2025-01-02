@@ -39,10 +39,6 @@ meson setup build
 ```
 4. Compile the project:
 ```bash
-meson compile -C build
-```
-OR
-```bash
 cd build && ninja
 ```
 5. Run the game:

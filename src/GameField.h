@@ -6,34 +6,32 @@
 class Tetromino;
 
 class GameField {
-private:
-	int** field;
-    size_t width;
-    size_t height;
-    int visibleWidth;
-    int visibleHeight;
-	int cellType;
-	std::string emptyCell;
-
 public:
 	GameField(size_t width, size_t height, int visWidth = -1, int visHeight = -1, std::string cellString = "  ", int cellValue = 0);
-    ~GameField();
+	~GameField();
 
-	void fill(int cellValue = 0);
+	int& operator()(const size_t x, const size_t y);
+	const int& operator()(const size_t x, const size_t y) const;
 
-    void refreshField(size_t timeForUpdate);
+	void fill(const int cellValue = 0);
 
-    int getCell(size_t x, size_t y) const;
-    void setCell(size_t x, size_t y, int cellValue);
+	int getCell(const size_t x, const size_t y) const;
+	void setCell(const size_t x, const size_t y, const int cellValue);
 
 	size_t getWidth() const;
 	size_t getHeight() const;
 	size_t getVisibleWidth() const;
 	size_t getVisibleHeight() const;
 
-    std::string getEmptyCell() const;
-    void setEmptyCell(std::string cellString);
+	std::string getEmptyCell() const;
+	void setEmptyCell(const std::string cellString);
 
-    int& operator()(size_t x, size_t y);
-    const int& operator()(size_t x, size_t y) const;
+private:
+	int** field;
+	size_t width;
+	size_t height;
+	int visibleWidth;
+	int visibleHeight;
+	int cellType;
+	std::string emptyCell;
 };

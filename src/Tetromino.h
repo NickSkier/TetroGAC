@@ -10,6 +10,32 @@
 class GameField;
 
 class Tetromino {
+public:
+	Tetromino(int x = F_WIDTH / 2 - 2, int y = F_HEIGHT - 4, std::string str = "[]");
+	~Tetromino();
+
+	Tetromino& operator=(const Tetromino & other);
+
+	int randomBag();
+
+	void setSymbol(const std::string str);
+	std::string getSymbol() const;
+	void setType(const int cellValue);
+	int getType() const;
+	size_t getShape() const;
+	size_t getRotation() const;
+
+	void setXY(const int x, const int y);
+	int getX() const;
+	int getY() const;
+
+	void update(GameField* field, int cellValue = -1);
+	bool checkCollisions(const GameField* field) const;
+
+	void rotate(const bool reverse = false);
+	bool moveXY(GameField* field, const int changeX = 0, const int changeY = 0);
+	int hardDrop(GameField* field);
+
 private:
 	int tetrominoX;
 	int tetrominoY;
@@ -17,30 +43,4 @@ private:
 	size_t rotation;
 	int cellType;
 	std::string tetrominoSymbol;
-
-public:
-	Tetromino(int x = F_WIDTH / 2 - 1, int y = F_HEIGHT - 4, std::string str = "[]");
-	~Tetromino();
-
-	Tetromino& operator=(const Tetromino & other);
-
-	int randomBag();
-
-	void setSymbol(std::string str);
-	std::string getSymbol();
-	void setType(int cellValue);
-	int getType();
-	size_t getShape();
-	size_t getRotation();
-
-	void setXY(int x, int y);
-	int getX() const;
-	int getY() const;
-
-	void update(GameField* field, int cellValue = -1);
-	bool checkCollisions(GameField* field);
-
-	void rotate(bool reverse = false);
-	bool moveXY(GameField* field, int changeX = 0, int changeY = 0);
-	int hardDrop(GameField* field);
 };

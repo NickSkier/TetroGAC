@@ -2,54 +2,53 @@
 #include <ncurses.h>
 #include "GameField.h"
 
-GameField::GameField(size_t width, size_t height, int visWidth, int visHeight, std::string cellString, int cellValue)
-    : width(width), height(height), emptyCell(cellString) {
-    if (visWidth == -1) {
-    	visibleWidth = width;
-    }
-    else {
-    	visibleWidth = visWidth;
-    }
-    if (visHeight == -1) {
-    	visibleHeight = height;
-    }
-    else {
-    	visibleHeight = visHeight;
-    }
-    field = new int*[width];
-    for (size_t i = 0; i < width; ++i) {
-        field[i] = new int[height];
-    }
-    fill(cellValue);
+GameField::GameField(size_t width, size_t height, int visWidth, int visHeight, std::string cellString, int cellValue) : width(width), height(height), emptyCell(cellString) {
+	if (visWidth == -1) {
+		visibleWidth = width;
+	}
+	else {
+		visibleWidth = visWidth;
+	}
+	if (visHeight == -1) {
+		visibleHeight = height;
+	}
+	else {
+		visibleHeight = visHeight;
+	}
+	field = new int*[width];
+	for (size_t i = 0; i < width; ++i) {
+		field[i] = new int[height];
+	}
+	fill(cellValue);
 }
 
 GameField::~GameField() {
-    for (size_t i = 0; i < width; ++i) {
-        delete[] field[i];
-    }
-    delete[] field;
+	for (size_t i = 0; i < width; ++i) {
+		delete[] field[i];
+	}
+	delete[] field;
 }
 
-void GameField::fill(int cellValue) {
-    for (size_t i = 0; i < height; ++i) {
-        for (size_t j = 0; j < width; ++j) {
-            field[j][i] = cellValue;
-        }
-    }
+void GameField::fill(const int cellValue) {
+	for (size_t i = 0; i < height; ++i) {
+		for (size_t j = 0; j < width; ++j) {
+			field[j][i] = cellValue;
+		}
+	}
 }
 
-int GameField::getCell(size_t x, size_t y) const {
-    if (x >= width || y >= height) {
-        throw std::out_of_range("Out of range while getting a cell");
-    }
-    return field[x][y];
+int GameField::getCell(const size_t x, const size_t y) const {
+	if (x >= width || y >= height) {
+		throw std::out_of_range("Out of range while getting a cell");
+	}
+	return field[x][y];
 }
 
-void GameField::setCell(size_t x, size_t y, int cellValue) {
-    if (x >= width || y >= height) {
-        throw std::out_of_range("Out of range while setting a cell");
-    }
-    field[x][y] = cellValue;
+void GameField::setCell(const size_t x, const size_t y, const int cellValue) {
+	if (x >= width || y >= height) {
+		throw std::out_of_range("Out of range while setting a cell");
+	}
+	field[x][y] = cellValue;
 }
 
 size_t GameField::getWidth() const {
@@ -69,25 +68,25 @@ size_t GameField::getVisibleHeight() const {
 }
 
 std::string GameField::getEmptyCell() const {
-    return emptyCell;
+	return emptyCell;
 }
 
-void GameField::setEmptyCell(std::string cellString) {
-    emptyCell = cellString;
+void GameField::setEmptyCell(const std::string cellString) {
+	emptyCell = cellString;
 }
 
-int& GameField::operator()(size_t x, size_t y) {
-    if (x >= width || y >= height) {
-    std::cerr << x << " " << y;
-        throw std::out_of_range("Out of range while accessing a cell");
-    }
-    return field[x][y];
+int& GameField::operator()(const size_t x, const size_t y) {
+	if (x >= width || y >= height) {
+	std::cerr << x << " " << y;
+		throw std::out_of_range("Out of range while accessing a cell");
+	}
+	return field[x][y];
 }
 
-const int& GameField::operator()(size_t x, size_t y) const {
-    if (x >= width || y >= height) {
-        throw std::out_of_range("Out of range while accessing a cell");
-    }
-    return field[x][y];
+const int& GameField::operator()(const size_t x, const size_t y) const {
+	if (x >= width || y >= height) {
+		throw std::out_of_range("Out of range while accessing a cell");
+	}
+	return field[x][y];
 }
 

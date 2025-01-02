@@ -9,13 +9,34 @@
 
 class Game {
 public:
-	void refreshField(GameField* field, size_t timeForUpdate = 0, int offsetX = 0, int offsetY = 0, bool borders = true);
-	void print(GameField* field, int offsetX = 0, int offsetY = 0) const;
-	void printBorders(GameField* field, int offsetX = 0, int offsetY = 0) const;
+	Game():field(F_WIDTH, F_HEIGHT, F_WIDTH , F_VISIBLE_HEIGHT), preview(6, 6, -1, -1), tetromino(), nextTetromino(), score(0) {};
 
-	bool checkLineState(GameField* field, size_t lineNumber, bool checkForFull = true);
-	void shiftLines(GameField* field, size_t maxPasses = 4, bool checkType = true);
+	bool gameLoop();
+
+	void refreshField(const GameField* field, const size_t timeForUpdate = 0, const int offsetX = 0, const int offsetY = 0, const bool borders = true) const;
+	void print(const GameField* field, const int offsetX = 0, const int offsetY = 0) const;
+	void printBorders(const GameField* field, const bool animate = false, const int offsetX = 0, const int offsetY = 0) const;
+	void printPreview();
+
+	bool handleTetrominoLanding(const bool collided);
+	void clearLinesAndUpdateScore();
+	bool checkLineState(const GameField* field, const size_t lineNumber, const bool checkForFull = true) const;
+	void shiftLines(GameField* field, const size_t maxPasses = 4, const bool checkType = true);
 	int clearAndShiftLines(GameField* field);
 
-	bool GameOver(GameField* field, Tetromino* tetro);
+	void endMessage() const;
+	bool GameOver(const GameField* field, const Tetromino* tetro) const;
+	void GameOverAnimation() const;
+
+	void gameControls(const int userInput);
+
+private:
+	int level;
+	int score;
+	int totalClearedLines = 0;
+	int userInput;
+	GameField field;
+	GameField preview;
+	Tetromino tetromino;
+	Tetromino nextTetromino;
 };
