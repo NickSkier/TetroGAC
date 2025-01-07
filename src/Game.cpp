@@ -266,28 +266,33 @@ bool Game::GameOver(const GameField* field, const Tetromino* tetro) const {
 
 void Game::GameOverAnimation() const {
 	const std::string gameOverMessage = "Game Over!";
-	int userInterrupt;
 	bool shouldBrake = false;
+	beep(); // Ring a terminal bell to notify a player about his Game Over;
 	attron(A_BOLD);
-	mvprintw(F_VISIBLE_HEIGHT / 2, 5 + F_WIDTH - gameOverMessage.size() / 2, gameOverMessage.c_str());
+	mvprintw(F_VISIBLE_HEIGHT / 2, 5 + F_WIDTH - gameOverMessage.size() / 2, "%s", gameOverMessage.c_str());
 	refresh();
 	attroff(A_BOLD);
-	getchar();
+	timeout(-1);
+	while (getch() != 10) {}
+	timeout(1);
+	flushinp();
 	for (size_t i = 0; i < F_VISIBLE_HEIGHT + 5; ++i) {
 		for (size_t j = 0; j < F_WIDTH * 2 + 20; ++j) {
-			userInterrupt = getch();
-			if (userInterrupt != ERR) {
+		    nodelay(stdscr, TRUE);
+			if (getch() != ERR) {
 				shouldBrake = true;
 				break;
 			}
 			else {
 				if (!(i == F_VISIBLE_HEIGHT / 2 && j >= F_WIDTH && j < F_WIDTH + gameOverMessage.length())) {
 					mvprintw(i, j, " ");
-					refresh();
-					napms(2);
+					// refresh();
+					// napms(2);
 				}
 			}
 		}
+		refresh();
+		napms(80);
 		if (shouldBrake) break;
 	}
 }
