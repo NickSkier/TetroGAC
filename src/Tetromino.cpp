@@ -15,18 +15,6 @@ Tetromino::Tetromino(int x, int y, std::string str) : tetrominoX(x), tetrominoY(
 
 Tetromino::~Tetromino() { }
 
-Tetromino& Tetromino::operator=(const Tetromino & other) {
-	if (this != &other) {
-		tetrominoX = other.tetrominoX;
-		tetrominoY = other.tetrominoY;
-		shape = other.shape;
-		rotation = other.rotation;
-		cellType = other.cellType;
-		tetrominoSymbol = other.tetrominoSymbol;
-	}
-	return *this;
-}
-
 int Tetromino::randomBag() {
 	static int bag[7] = { 0, 1, 2, 3, 4, 5, 6 };
 	static int bagIterator = 7;
@@ -92,10 +80,10 @@ void Tetromino::update(GameField* field, int cellValue) {
 	for (int i = 0; i < 4; ++i) {
 		for (int j = 0; j < 4; ++j) {
 			if (tetrominoes[shape][rotation][j][i]) {
-				if (tetrominoX + i < 0 || tetrominoX + i >= field->getWidth() ||
-					tetrominoY - j < 0 || tetrominoY - j >= field->getHeight())
+				if (tetrominoX + i < 0 || tetrominoX + i >= F_WIDTH ||
+					tetrominoY - j < 0 || tetrominoY - j >= F_HEIGHT)
 					{ }
-				else  {
+				else {
 					field->setCell(tetrominoX + i, tetrominoY - j, cellValue);
 				}
 			}
@@ -107,10 +95,11 @@ bool Tetromino::checkCollisions(const GameField* field) const {
 	for (int i = 0; i < 4; ++i) {
 		for (int j = 0; j < 4; ++j) {
 			if (tetrominoes[shape][rotation][j][i]) {
-				if (tetrominoX + i < 0 || tetrominoX + i >= field->getWidth() ||
-					tetrominoY - j < 0 || tetrominoY - j >= field->getHeight()) {
+				if (tetrominoX + i < 0 || tetrominoX + i >= F_WIDTH ||
+					tetrominoY - j < 0 || tetrominoY - j >= F_HEIGHT) {
 					return true;
-				} else if (field->getCell(tetrominoX + i, tetrominoY - j) != 0) {
+				}
+				else if (field->getCell(tetrominoX + i, tetrominoY - j) != 0) {
 					return true;
 				}
 			}
@@ -118,7 +107,6 @@ bool Tetromino::checkCollisions(const GameField* field) const {
 	}
 	return false;
 }
-
 
 void Tetromino::rotate(const bool reverse) {
 	if (reverse) rotation += 2;

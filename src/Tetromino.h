@@ -14,8 +14,6 @@ public:
 	Tetromino(int x = F_WIDTH / 2 - 2, int y = F_HEIGHT - 4, std::string str = "[]");
 	~Tetromino();
 
-	Tetromino& operator=(const Tetromino & other);
-
 	int randomBag();
 
 	void setSymbol(const std::string str);

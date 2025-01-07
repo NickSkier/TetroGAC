@@ -13,7 +13,12 @@ public:
 
 	bool gameLoop();
 
+	int getLevel() const;
+	void setLevel(const int level);
+private:
+	bool levelLoop();
 	void refreshField(const GameField* field, const size_t timeForUpdate = 0, const int offsetX = 0, const int offsetY = 0, const bool borders = true) const;
+	void printStats() const;
 	void print(const GameField* field, const int offsetX = 0, const int offsetY = 0) const;
 	void printBorders(const GameField* field, const bool animate = false, const int offsetX = 0, const int offsetY = 0) const;
 	void printPreview();
@@ -30,13 +35,17 @@ public:
 
 	void gameControls(const int userInput);
 
-private:
-	int level;
-	int score;
-	int totalClearedLines = 0;
-	int userInput;
+	void initColors();
+
 	GameField field;
 	GameField preview;
 	Tetromino tetromino;
 	Tetromino nextTetromino;
+	int level = 0;
+	int levelSpeed[14] = {1024, 768, 512, 384, 256, 128, 96, 64, 32, 16, 8, 4, 2, 1};
+	int score;
+	int linesToClearLevel = 10;
+	int totalClearedLines = 0;
+	int userInput;
+	bool gameState = true;
 };

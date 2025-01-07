@@ -7,17 +7,30 @@
 #include "Tetromino.h"
 
 bool Game::gameLoop() {
+    initColors();
+	printBorders(&field, true);
+	while (gameState) {
+		if (!levelLoop()) {
+			return false;
+		}
+		++level;
+	}
+	endMessage();
+	return false;
+}
+
+bool Game::levelLoop() {
 	int userInput;
 	auto timeToMove = std::chrono::steady_clock::now();
-	totalClearedLines = 0;
-	printBorders(&field, true);
+
 	printPreview();
-	while (totalClearedLines < 26) {
+	while (totalClearedLines < (level * 10 + 10)) {
+		if (gameState == false) { return false; }
 		if (std::chrono::steady_clock::now() >= timeToMove) {
 			if (!handleTetrominoLanding(tetromino.moveXY(&field, 0, -1))) {	// Move down and check if a tetromino collided with other blocks
-				return false;	// Return false if GameOver is true;
+				gameState = false;	// Return false if GameOver is true;
 			}
-			timeToMove += std::chrono::milliseconds(500);
+			timeToMove += std::chrono::milliseconds(levelSpeed[level]);
 			refreshField(&field);
 		}
 		userInput = getch();
@@ -25,23 +38,35 @@ bool Game::gameLoop() {
 			gameControls(userInput);
 			refreshField(&field);
 		}
-		mvprintw(0, 0, "Lines cleared: %*d", 2, totalClearedLines);
-		mvprintw(0, 20, "Score: %d", score);
 	}
-	if (totalClearedLines >= 26) { endMessage(); }
 	return true;
+}
+
+int Game::getLevel() const {
+	return level;
+}
+
+void Game::setLevel(const int level) {
+	this->level = level;
 }
 
 void Game::refreshField(const GameField* field, const size_t timeForUpdate, const int offsetX, const int offsetY, const bool borders) const {
 	print(field, offsetX, offsetY);
+	printStats();
 	if (borders) printBorders(field, false, offsetX, offsetY);
 	refresh();
 
 	napms(timeForUpdate);
 }
 
+void Game::printStats() const {
+	mvprintw(8, 28, "Lines: %-*d", 3, totalClearedLines);
+	mvprintw(10, 28, "Score: %d", score);
+	mvprintw(12, 28, "Level: %d", level);
+}
+
 void Game::print(const GameField* field, const int offsetX, const int offsetY) const {
-std::string blockString = "[]";
+	std::string blockString = "[]";
 	int visHeight = field->getVisibleHeight();
 	int visWidth = field->getVisibleWidth();
 	for (int i = visHeight - 1; i >= 0; --i) {
@@ -116,7 +141,7 @@ void Game::printPreview() {
 	Tetromino nextTetrominoPreview = nextTetromino;
 	nextTetrominoPreview.setXY(1, 3);
 	nextTetrominoPreview.update(&preview);
-	refreshField(&preview, 0, 25, 0, false);
+	refreshField(&preview, 0, 23, 0, false);
 }
 
 bool Game::handleTetrominoLanding(const bool collided) {
@@ -169,9 +194,9 @@ void Game::shiftLines(GameField* field, const size_t maxPasses, const bool check
  * The maximum value is 4; more passes are unnecessary
  * because of the Tetris logic.
  */
- 	int fieldVisHeight = field->getVisibleHeight();
- 	int fieldWidth = field->getWidth();
- 	int norefresh = 0;
+	int fieldVisHeight = field->getVisibleHeight();
+	int fieldWidth = field->getWidth();
+	int norefresh = 0;
 	for (size_t lineNumber = 0; lineNumber < maxPasses; ++lineNumber) {
 		for (int lineNumber = 0; lineNumber < fieldVisHeight; ++lineNumber) {	// Traverse visible lines
 			if (checkLineState(field, lineNumber, checkType)) {
@@ -223,15 +248,16 @@ void Game::endMessage() const {
 	std::string message1 = "All lines cleared!";
 	std::string message2 = "Your score: " + std::to_string(score);
 	attron(A_BOLD);
-	mvprintw(F_VISIBLE_HEIGHT / 2, 5 + F_WIDTH - message1.size() / 2, message1.c_str());
-	mvprintw(F_VISIBLE_HEIGHT / 2 + 1, 5 + F_WIDTH - message2.size() / 2, message2.c_str());
+	mvprintw(F_VISIBLE_HEIGHT / 2, 5 + F_WIDTH - message1.size() / 2, "%s", message1.c_str());
+	mvprintw(F_VISIBLE_HEIGHT / 2 + 1, 5 + F_WIDTH - message2.size() / 2, "%s", message2.c_str());
 	refresh();
 	attroff(A_BOLD);
 	getchar();
 }
 
 bool Game::GameOver(const GameField* field, const Tetromino* tetro) const {
-	if (tetro->checkCollisions(field) && tetro->getY() >= field->getVisibleHeight()) {
+	if (tetro->checkCollisions(field) && tetro->getY() >= F_VISIBLE_HEIGHT) {
+		refreshField(field);
 		GameOverAnimation();
 		return true;
 	}
@@ -270,7 +296,7 @@ void Game::gameControls(const int userInput) {
 	switch (userInput) {
 		case (int)'q':	// Quit the game
 			endwin();
-			std::cout << "\nStopped by user.\n";
+			std::cout << "\nStopped by user.\n\n";
 			std::exit(0);
 		case KEY_LEFT:	// Move Left
 			tetromino.moveXY(&field, -1, 0);
@@ -279,14 +305,15 @@ void Game::gameControls(const int userInput) {
 			tetromino.moveXY(&field, 1, 0);
 			break;
 		case KEY_DOWN:	// Soft Drop
-			tetromino.moveXY(&field, 0, -1);
-			score += 1;	// 1 point for each cell of a soft drop
+			if (tetromino.moveXY(&field, 0, -1)) {
+				score += 1;	// 1 point for each cell of a soft drop
+			}
 			break;
 		case (int)' ':	// Hard Drop
 			score += tetromino.hardDrop(&field); // 2 points for each cell of a hard drop
-			handleTetrominoLanding(false);
+			if (!handleTetrominoLanding(false)) {gameState = false;}
 			break;
-		case KEY_UP:		// Rotate Clockwise
+		case KEY_UP:	// Rotate Clockwise
 			tetromino.update(&field, 0);
 			tetromino.rotate();
 			if (tetromino.checkCollisions(&field)) tetromino.rotate(true);

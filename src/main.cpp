@@ -24,14 +24,7 @@ int main() {
 
 	Game game;
 
-	try {
-		game.gameLoop();
-	}
-	catch (const std::exception& e) {
-		mvprintw(F_VISIBLE_HEIGHT + 1, 0, "Error: %s", e.what());
-		refresh();
-		getchar();
-	}
+	while (game.gameLoop());
 
 	endwin();
 
