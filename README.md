@@ -14,7 +14,7 @@ Runs in the terminal with a UI in `ncurses`.
 - [x] Game Over
 - [x] Piece preview
 - [x] Score system
-- [ ] Levels
+- [x] Levels
 - [x] Piece colors
 - [x] Random Generator (7 bag)
 - [ ] Hold
