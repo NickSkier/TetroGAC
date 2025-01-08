@@ -323,9 +323,6 @@ void Game::gameControls(const int userInput) {
 			tetromino.rotate(true);
 			if (tetromino.checkCollisions(&field)) tetromino.rotate();
 			break;
-		case (int)'l':	// Increase totalClearedLines
-			++totalClearedLines;
-			break;
 		}
 	tetromino.update(&field);
 }
