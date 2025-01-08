@@ -9,7 +9,8 @@ int main() {
 	noecho();
 	curs_set(0);
 	cbreak();
-	nodelay(stdscr, TRUE);
+	halfdelay(1);
+	timeout(1);
 	start_color();
 
 	Game game;
