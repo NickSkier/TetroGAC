@@ -274,25 +274,20 @@ void Game::GameOverAnimation() const {
 	attroff(A_BOLD);
 	timeout(-1);
 	while (getch() != 10) {}
-	timeout(1);
 	flushinp();
+	timeout(1);
 	for (size_t i = 0; i < F_VISIBLE_HEIGHT + 5; ++i) {
+		if (getch() != ERR) {
+			shouldBrake = true;
+			break;
+		}
 		for (size_t j = 0; j < F_WIDTH * 2 + 20; ++j) {
-		    nodelay(stdscr, TRUE);
-			if (getch() != ERR) {
-				shouldBrake = true;
-				break;
-			}
-			else {
-				if (!(i == F_VISIBLE_HEIGHT / 2 && j >= F_WIDTH && j < F_WIDTH + gameOverMessage.length())) {
-					mvprintw(i, j, " ");
-					// refresh();
-					// napms(2);
-				}
+			if (!(i == F_VISIBLE_HEIGHT / 2 && j >= F_WIDTH && j < F_WIDTH + gameOverMessage.length())) {
+				mvprintw(i, j, " ");
 			}
 		}
 		refresh();
-		napms(80);
+		napms(60);
 		if (shouldBrake) break;
 	}
 }
@@ -345,3 +340,4 @@ void Game::initColors() {
 	init_pair(5, COLOR_GREEN, COLOR_GREEN);
 	init_pair(6, COLOR_RED, COLOR_RED);
 	init_pair(7, COLOR_MAGENTA, COLOR_MAGENTA);
+}

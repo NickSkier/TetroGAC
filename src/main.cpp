@@ -9,7 +9,6 @@ int main() {
 	noecho();
 	curs_set(0);
 	cbreak();
-	halfdelay(1);
 	timeout(1);
 	start_color();
 
@@ -21,3 +20,4 @@ int main() {
 
 	return 0;
 }
+
